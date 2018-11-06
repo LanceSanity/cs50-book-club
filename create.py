@@ -15,10 +15,13 @@ def create_tables():
             'year SMALLINT NOT NULL)'),
         ('CREATE TABLE users ('
             'id SERIAL PRIMARY KEY, '
+            'email VARCHAR NOT NULL, '
+            'password_hash VARCHAR NOT NULL, '
             'username VARCHAR NOT NULL) '),
         ('CREATE TABLE reviews ('
             'review_id SERIAL PRIMARY KEY, '
             'review VARCHAR NOT NULL, '
+            'rating SMALLINT NOT NULL, '
             'book_id VARCHAR, FOREIGN KEY(book_id) REFERENCES books(isbn), '
             'user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))')
         )

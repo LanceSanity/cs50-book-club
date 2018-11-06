@@ -1,4 +1,7 @@
+flask-login
+flask-wtf
 Flask
 Flask-Session
+passlib
 psycopg2
 SQLAlchemy
