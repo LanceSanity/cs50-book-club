@@ -44,10 +44,15 @@ def register():
         username = form.username.data
         email = form.email.data
         password = sha256_crypt.encrypt((str(form.password.data)))
-        r = db.execute('SELECT * FROM users WHERE username = (:username)',
+        r = db.execute('SELECT username FROM users WHERE username = (:username)',
                 {'username': username})
+        r2 = db.execute('SELECT email FROM users WHERE email = (:email)',
+                {'email': email})
         if r.fetchall():
             flash('That username has been taken, please try another.')
+            return render_template('register.html', title='Register', form=form)
+        elif r2.fetchall():
+            flash('That email address has already been registered.')
             return render_template('register.html', title='Register', form=form)
         else:
             db.execute(('INSERT INTO users (username, password_hash, email)'
