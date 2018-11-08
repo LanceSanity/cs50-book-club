@@ -47,13 +47,13 @@ def login():
 #        flash('Login requested for user {}, remember_me={}'.format(
 #            form.username.data, form.remember_me.data))
         username = form.username.data
-        data = db.execute('SELECT * FROM users WHERE username = (:username)',
+        proxy = db.execute('SELECT * FROM users WHERE username = (:username)',
                 {'username': username})
+        data = proxy.fetchall()
         if not data:
             flash('Username: {} does not exist.'.format(username))
             return render_template('login.html', title='Sign In', form=form)
-        data = data.fetchone()[2]
-        if sha256_crypt.verify(request.form['password'], data):
+        if sha256_crypt.verify(request.form['password'], data[0][2]):
             session['logged_in'] = True
             session['username'] = form.username.data
             return redirect(url_for('index'))
