@@ -3,6 +3,7 @@ import os
 from flask import Flask, flash, render_template, redirect, session, url_for, request
 from flask_session import Session
 from forms import *
+from functools import wraps
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -23,6 +24,17 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
+# Helper methods
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Login required')
+            return redirect(url_for('login'))
+    return wrap
+
 # Routes
 @app.route('/')
 def index():
@@ -32,10 +44,30 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        flash('Login requested for user {}, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
-        return redirect(url_for('index'))
+#        flash('Login requested for user {}, remember_me={}'.format(
+#            form.username.data, form.remember_me.data))
+        username = form.username.data
+        data = db.execute('SELECT * FROM users WHERE username = (:username)',
+                {'username': username})
+        if not data:
+            flash('Username: {} does not exist.'.format(username))
+            return render_template('login.html', title='Sign In', form=form)
+        data = data.fetchone()[2]
+        if sha256_crypt.verify(request.form['password'], data):
+            session['logged_in'] = True
+            session['username'] = form.username.data
+            return redirect(url_for('index'))
+        else:
+            flash('Password incorrect, try again.')
+            return render_template('login.html', title='Sign In', form=form)
     return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()
+    flash('You have successfully logged out.')
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
