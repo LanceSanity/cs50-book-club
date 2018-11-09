@@ -5,7 +5,13 @@
     <body>
         <div>
             <a href={{ url_for('index') }}>Home</a>
+            <form action="{{ url_for('search') }}">
+                <input type="text" name="q" placeholder="SEARCH" 
+                maxlength="60" required>
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
             {% if session.logged_in %}
+            <span>Signed in as {{ session.username }}</span>
             <a href={{ url_for('logout') }}>Logout</a>
             {% else %}
             <a href={{ url_for('login') }}>Login</a>

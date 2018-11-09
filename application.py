@@ -44,8 +44,6 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-#        flash('Login requested for user {}, remember_me={}'.format(
-#            form.username.data, form.remember_me.data))
         username = form.username.data
         proxy = db.execute('SELECT * FROM users WHERE username = (:username)',
                 {'username': username})
@@ -58,9 +56,9 @@ def login():
             session['username'] = form.username.data
             return redirect(url_for('index'))
         else:
-            flash('Password incorrect, try again.')
+            flash('Password incorrect, try again.') 
             return render_template('login.html', title='Sign In', form=form)
-    return render_template('login.html', title='Sign In', form=form)
+        return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
 @login_required
@@ -94,3 +92,14 @@ def register():
             flash('Thanks for registering!')
             return render_template('index.html')
     return render_template('register.html', form=form)
+
+@app.route('/search')
+def search():
+    q = request.args.get('q')
+    search_query = '%' + q + '%'
+    proxy = db.execute(("SELECT * FROM books"
+        " WHERE LOWER(title) LIKE LOWER((:q)) OR"
+        " isbn LIKE (:q) OR LOWER(author) LIKE LOWER((:q))"),
+        {'q': search_query})
+    data = proxy.fetchall()
+    return render_template('search.html', results=data)

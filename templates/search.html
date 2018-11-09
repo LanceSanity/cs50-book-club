@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    <div class="results">
+        <ul>
+        {% for entry in results %}
+            <li>{{ entry.title }}</li>
+        {% endfor %}
+        </ul>
+{% endblock %}

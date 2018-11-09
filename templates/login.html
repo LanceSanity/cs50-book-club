@@ -1,5 +1,3 @@
-{% extends "base.html" %}
-
 {% block content %}
     <h1>Sign In</h1>
     <form action="" method="post" novalidate>
@@ -22,4 +20,5 @@
         <p>{{ form.submit() }}</p>
     </form>
     <p>New user? <a href="{{ url_for('register') }}">Sign up now!</a></p>
+    <p>Go Back <a href="{{url_for('index') }}">Home</a></p>
 {% endblock %}
