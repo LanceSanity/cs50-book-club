@@ -22,6 +22,7 @@ def create_tables():
             'review_id SERIAL PRIMARY KEY, '
             'review VARCHAR NOT NULL, '
             'rating SMALLINT NOT NULL, '
+            'review_date DATE NOT NULL, '
             'book_id VARCHAR, FOREIGN KEY(book_id) REFERENCES books(isbn), '
             'user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))')
         )

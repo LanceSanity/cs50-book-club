@@ -5,7 +5,11 @@
     <div class="results">
         <ul>
         {% for entry in results %}
-            <li>{{ entry.title }}</li>
+        <li>
+            <a href="{{ url_for('books', isbn=entry.isbn) }}">{{ entry.title }}</a>
+        </li>
+        {% else %}
+            <p>No matches found</p>
         {% endfor %}
         </ul>
 {% endblock %}
