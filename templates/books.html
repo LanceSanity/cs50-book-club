@@ -4,4 +4,16 @@
     <div>
         <p>{{ book.title }} by {{ book.author }}</p>
     </div>
+    <div>
+        {% for review in reviews %}
+            <article>
+                <p>{{ review.username }} rated {{ review.rating }}/5 on {{ review.review_date}}</p>
+                {{ review.review }}
+            </article>
+        {% endfor %}
+    <div>
+        <button type="button">
+            <a href="{{ url_for('review', isbn=book.isbn, title=book.title, author=book.author) }}">Write A Review</a>
+        </button>
+    </div>
 {% endblock %}

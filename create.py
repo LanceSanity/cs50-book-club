@@ -23,8 +23,8 @@ def create_tables():
             'review VARCHAR NOT NULL, '
             'rating SMALLINT NOT NULL, '
             'review_date DATE NOT NULL, '
-            'book_id VARCHAR, FOREIGN KEY(book_id) REFERENCES books(isbn), '
-            'user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))')
+            'book_id VARCHAR NOT NULL, FOREIGN KEY(book_id) REFERENCES books(isbn), '
+            'username VARCHAR NOT NULL')
         )
     for command in commands:
         db.execute(command)

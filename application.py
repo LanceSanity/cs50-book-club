@@ -1,5 +1,6 @@
 import os
 
+from datetime import date
 from flask import Flask, flash, render_template, redirect, session, url_for, request
 from flask_session import Session
 from forms import *
@@ -31,7 +32,7 @@ def login_required(f):
         if 'logged_in' in session:
             return f(*args, **kwargs)
         else:
-            flash('Login required')
+            flash('Login required to write a review')
             return redirect(url_for('login'))
     return wrap
 
@@ -98,7 +99,7 @@ def search():
     q = request.args.get('q')
     search_query = '%' + q + '%'
     proxy = db.execute(("SELECT * FROM books WHERE title ILIKE (:q)"
-    "OR isbn LIKE (:q) OR author ILIKE (:q)"), {'q': search_query})
+    " OR isbn LIKE (:q) OR author ILIKE (:q)"), {'q': search_query})
     data = proxy.fetchall()
     return render_template('search.html', results=data)
 
@@ -107,4 +108,27 @@ def books(isbn):
     proxy = db.execute('SELECT * FROM books WHERE isbn = (:isbn)',
             {'isbn': isbn})
     data = proxy.fetchall()
-    return render_template('books.html', book=data[0])
+    review_proxy = db.execute(('SELECT review, rating, review_date, username'
+        ' FROM reviews WHERE book_id = (:isbn)'), {'isbn': isbn})
+    reviews = review_proxy.fetchall()
+    return render_template('books.html', book=data[0], reviews=reviews)
+
+@app.route('/review', methods=['GET', 'POST'])
+@login_required
+def review():
+    title = request.args.get('title', None)
+    author = request.args.get('author', None)
+    if request.method == 'POST':
+        isbn = request.args.get('isbn', None)
+        text = request.form.get('review')
+        rating = request.form.get('rate')
+        today = date.today()
+        username = session.get('username', 'Anon')
+        db.execute(('INSERT INTO reviews (review, rating, review_date,'
+            ' book_id, username) VALUES (:text, :rating, :today, :isbn,'
+            ' :username)'), {'text': text, 'rating': rating, 'today': today,
+                'isbn': isbn, 'username': username})
+        db.commit()
+        flash('Review posted for {}'.format(title))
+        return render_template('index.html')
+    return render_template('review.html', title=title, author=author)
