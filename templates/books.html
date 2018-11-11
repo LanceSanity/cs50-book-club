@@ -2,7 +2,10 @@
 
 {% block content %}
     <div>
-        <p>{{ book.title }} by {{ book.author }}</p>
+        <p>
+        {{ book.title }} by {{ book.author }} ({{ book.year }})<br>
+        ISBN: {{ book.isbn }}
+        </p>
     </div>
     <div>
         {% for review in reviews %}
@@ -12,8 +15,17 @@
             </article>
         {% endfor %}
     <div>
-        <button type="button">
-            <a href="{{ url_for('review', isbn=book.isbn, title=book.title, author=book.author) }}">Write A Review</a>
-        </button>
+        {% if reviewed %}
+            <button onclick="reviewedNotify()">Write a review</button>
+            <script>
+            function reviewedNotify() {
+                alert("You have already reviewed this book.");
+            }
+            </script>
+        {% else %}
+            <button type="button">
+                <a href="{{ url_for('review', isbn=book.isbn, title=book.title, author=book.author) }}">Write A Review</a>
+            </button>
+        {% endif %}
     </div>
 {% endblock %}

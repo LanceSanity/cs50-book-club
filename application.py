@@ -105,13 +105,19 @@ def search():
 
 @app.route('/books/<string:isbn>')
 def books(isbn):
-    proxy = db.execute('SELECT * FROM books WHERE isbn = (:isbn)',
-            {'isbn': isbn})
-    data = proxy.fetchall()
+    data = db.execute('SELECT * FROM books WHERE isbn = (:isbn)',
+            {'isbn': isbn}).fetchall()
     review_proxy = db.execute(('SELECT review, rating, review_date, username'
         ' FROM reviews WHERE book_id = (:isbn)'), {'isbn': isbn})
     reviews = review_proxy.fetchall()
-    return render_template('books.html', book=data[0], reviews=reviews)
+    username = session.get('username', 'Anon')
+    reviewed_query = db.execute(('SELECT review FROM reviews'
+    ' WHERE username = (:username)'), {'username': username}).fetchall()
+    REVIEWED_FLAG = False
+    if reviewed_query:
+        REVIEWED_FLAG = True
+    return render_template('books.html', book=data[0], reviews=reviews,
+            reviewed=REVIEWED_FLAG)
 
 @app.route('/review', methods=['GET', 'POST'])
 @login_required
@@ -119,11 +125,11 @@ def review():
     title = request.args.get('title', None)
     author = request.args.get('author', None)
     if request.method == 'POST':
+        username = session.get('username', 'Anon')
         isbn = request.args.get('isbn', None)
         text = request.form.get('review')
         rating = request.form.get('rate')
         today = date.today()
-        username = session.get('username', 'Anon')
         db.execute(('INSERT INTO reviews (review, rating, review_date,'
             ' book_id, username) VALUES (:text, :rating, :today, :isbn,'
             ' :username)'), {'text': text, 'rating': rating, 'today': today,
