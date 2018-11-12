@@ -1,5 +1,6 @@
 *.swp
 *.py[cod]
+*flask_session
 .DS_Store
 .env
 .flaskenv

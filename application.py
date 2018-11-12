@@ -1,4 +1,5 @@
 import os
+import requests
 
 from datetime import date
 from flask import Flask, flash, render_template, redirect, session, url_for, request
@@ -35,6 +36,13 @@ def login_required(f):
             flash('Login required to write a review')
             return redirect(url_for('login'))
     return wrap
+
+def review_counts(isbn):
+    url = 'https://www.goodreads.com/book/review_counts.json'
+    payload = {'isbns': isbn}
+    r = requests.get(url, params=payload)
+    r_dict = r.json()['books'][0]
+    return (r_dict['ratings_count'], r_dict['average_rating'])
 
 # Routes
 @app.route('/')
@@ -117,7 +125,7 @@ def books(isbn):
     if reviewed_query:
         REVIEWED_FLAG = True
     return render_template('books.html', book=data[0], reviews=reviews,
-            reviewed=REVIEWED_FLAG)
+            reviewed=REVIEWED_FLAG, review_nums=review_counts(isbn))
 
 @app.route('/review', methods=['GET', 'POST'])
 @login_required
