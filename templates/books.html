@@ -5,8 +5,8 @@
         <p>
         {{ book.title }} by {{ book.author }} ({{ book.year }})<br>
         ISBN: {{ book.isbn }}<br>
-        Number of ratings: {{ review_nums[0] }}<br>
-        Average rating: {{ review_nums[1] }}<br>
+        Number of ratings: {{ review_nums['ratings_count'] }}<br>
+        Average rating: {{ review_nums['average_rating'] }}<br>
         </p>
     </div>
     <div>

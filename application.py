@@ -2,7 +2,7 @@ import os
 import requests
 
 from datetime import date
-from flask import Flask, flash, render_template, redirect, session, url_for, request
+from flask import Flask, flash, render_template, redirect, session, url_for, request, jsonify
 from flask_session import Session
 from forms import *
 from functools import wraps
@@ -42,7 +42,7 @@ def review_counts(isbn):
     payload = {'isbns': isbn}
     r = requests.get(url, params=payload)
     r_dict = r.json()['books'][0]
-    return (r_dict['ratings_count'], r_dict['average_rating'])
+    return r_dict
 
 # Routes
 @app.route('/')
@@ -146,3 +146,13 @@ def review():
         flash('Review posted for {}'.format(title))
         return render_template('index.html')
     return render_template('review.html', title=title, author=author)
+
+@app.route('/api/<isbn>')
+def api(isbn):
+    data = db.execute(('SELECT title, author, year FROM books'
+        ' WHERE isbn = (:isbn)'), {'isbn': isbn}).fetchall()
+    if not data:
+        return jsonify({'error': 'Not found'}), 404
+    d = review_counts(isbn)
+    return jsonify(title=data[0][0], author=data[0][1], year=data[0][2],
+            review_count=d['reviews_count'], average_score=d['average_rating'])
