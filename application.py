@@ -120,7 +120,8 @@ def books(isbn):
     reviews = review_proxy.fetchall()
     username = session.get('username', 'Anon')
     reviewed_query = db.execute(('SELECT review FROM reviews'
-    ' WHERE username = (:username)'), {'username': username}).fetchall()
+        ' WHERE username = (:username) AND book_id = (:isbn)'),
+        {'username': username, 'isbn': isbn}).fetchall()
     REVIEWED_FLAG = False
     if reviewed_query:
         REVIEWED_FLAG = True
@@ -144,7 +145,7 @@ def review():
                 'isbn': isbn, 'username': username})
         db.commit()
         flash('Review posted for {}'.format(title))
-        return render_template('index.html')
+        return redirect(url_for('books', isbn=isbn))
     return render_template('review.html', title=title, author=author)
 
 @app.route('/api/<isbn>')
