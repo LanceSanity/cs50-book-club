@@ -3,6 +3,7 @@ import requests
 
 from datetime import date
 from flask import Flask, flash, render_template, redirect, session, url_for, request, jsonify
+from flask_bootstrap import Bootstrap
 from flask_session import Session
 from forms import *
 from functools import wraps
@@ -12,6 +13,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'secret, lol'
+bootstrap = Bootstrap(app)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
