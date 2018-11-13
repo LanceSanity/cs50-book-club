@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <div>
-        <p>
-        {{ book.title }} by {{ book.author }} ({{ book.year }})<br>
-        ISBN: {{ book.isbn }}<br>
-        Number of ratings: {{ review_nums['ratings_count'] }}<br>
-        Average rating: {{ review_nums['average_rating'] }}<br>
-        </p>
+    <div class="container">
+        <div class="row text-center">
+            <h3 class="mt-5">{{ book.title }} by {{ book.author }} ({{ book.year }})</h3>
+            <p class="lead">
+                ISBN: {{ book.isbn }}<br>
+                Number of ratings: {{ review_nums['ratings_count'] }}<br>
+                Average rating: {{ review_nums['average_rating'] }}<br>
+            </p>
+        </div>
     </div>
-    <div>
+    <div class="card card-outline-secondary my-4">
+        <div class="card-header">User Reviews</div>
         {% for review in reviews %}
-            <article>
-                <p>{{ review.username }} rated {{ review.rating }}/5 on {{ review.review_date}}</p>
-                {{ review.review }}
-            </article>
+            <div class="card-body">
+                <small class="text-muted">{{ review.username }} rated {{ review.rating }}/5 on {{ review.review_date}}</small>
+                <p>{{ review.review }}</p>
+                <hr>
+            </div>
         {% endfor %}
     <div>
         {% if reviewed %}

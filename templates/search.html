@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Search Results</h1>
-    <div class="results">
-        <ul>
+    <h1 class="mt-5 text-center">Search Results</h1>
+    <div class="container">
         {% for entry in results %}
-        <li>
-            <a href="{{ url_for('books', isbn=entry.isbn) }}">{{ entry.title }}</a>
-        </li>
+        <div class="row">
+            <div class="col-md-5 text-center">
+                <h3>
+                    <a href="{{ url_for('books', isbn=entry.isbn) }}">{{ entry.title }}</a>
+                </h3>
+        </div>
         {% else %}
             <p>No matches found</p>
         {% endfor %}
