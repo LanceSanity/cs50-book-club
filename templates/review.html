@@ -1,13 +1,18 @@
 {% extends "base.html" %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+{% endblock %}
 
 {% block app_content %}
-    <h2>Create Review</h2>
-    <p>{{ title }} by {{ author }}</p>
-    <hr>
-    <div>
-        <h2>Write your review</h2>
+    <div class="container"
+        <div> 
+            <p class="lead text-center">{{ title }} by {{ author }}</p>
+        </div>
+        <hr>
+        <h3 class="mt-5 text-center">Write your review</h3>
         <form method="post">
-            <div class="rate">
+            <div class="rate text-center">
                 <input type="radio" id="star5" name="rate" value="5" />
                 <label for="star5" title="text">5 stars</label>
                 <input type="radio" id="star4" name="rate" value="4" />
@@ -19,8 +24,11 @@
                 <input type="radio" id="star1" name="rate" value="1" />
                 <label for="star1" title="text">1 star</label>
             </div>
-            <input type="submit">
-            <textarea rows="4" cols="50" name="review" placeholder="What did you like or dislike?"></textarea>
+            <div class="form-group text-center">
+                <textarea class="form-control" rows="4" cols="50" name="review" placeholder="What did you like or dislike?"></textarea>
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </form>
     </div>
 {% endblock %}

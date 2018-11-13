@@ -11,7 +11,7 @@
             </p>
         </div>
     </div>
-    <div class="card card-outline-secondary my-4">
+    <div class="card card-outline-secondary my-4 text-center">
         <div class="card-header">User Reviews</div>
         {% for review in reviews %}
             <div class="card-body">
@@ -19,19 +19,22 @@
                 <p>{{ review.review }}</p>
                 <hr>
             </div>
+        {% else %}
+        <p><i>No reviews yet!</i></p>
         {% endfor %}
     <div>
         {% if reviewed %}
-            <button onclick="reviewedNotify()">Write a review</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="reviewedNotify()">Write a review</button>
             <script>
             function reviewedNotify() {
                 alert("You have already reviewed this book.");
             }
             </script>
         {% else %}
-            <button type="button">
-                <a href="{{ url_for('review', isbn=book.isbn, title=book.title, author=book.author) }}">Write A Review</a>
-            </button>
+            <a href="{{ url_for('review', isbn=book.isbn, title=book.title, author=book.author) }}">
+                <button type="button" class="btn btn-primary btn-lg">Write a review
+                </button>
+            </a>
         {% endif %}
     </div>
 {% endblock %}
