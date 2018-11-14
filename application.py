@@ -1,6 +1,7 @@
 import os
 import requests
 
+from config import Config
 from datetime import date
 from flask import Flask, flash, render_template, redirect, session, url_for, request, jsonify
 from flask_bootstrap import Bootstrap
@@ -12,7 +13,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'secret, lol'
+app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 
 # Check for environment variable
@@ -38,6 +39,31 @@ def login_required(f):
             flash('Login required to write a review')
             return redirect(url_for('login'))
     return wrap
+
+def create_app(config_class=Config):
+    # ...
+    if not app.debug and not app.testing:
+        # ...
+
+        if app.config['LOG_TO_STDOUT']:
+            stream_handler = logging.StreamHandler()
+            stream_handler.setLevel(logging.INFO)
+            app.logger.addHandler(stream_handler)
+        else:
+            if not os.path.exists('logs'):
+                os.mkdir('logs')
+            file_handler = RotatingFileHandler('logs/cs50-book-club.log',
+                                               maxBytes=10240, backupCount=10)
+            file_handler.setFormatter(logging.Formatter(
+                '%(asctime)s %(levelname)s: %(message)s '
+                '[in %(pathname)s:%(lineno)d]'))
+            file_handler.setLevel(logging.INFO)
+            app.logger.addHandler(file_handler)
+
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('cs50-book-club startup')
+
+    return app
 
 def review_counts(isbn):
     url = 'https://www.goodreads.com/book/review_counts.json'

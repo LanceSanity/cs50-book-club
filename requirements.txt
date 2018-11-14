@@ -3,6 +3,7 @@ flask-login
 flask-wtf
 Flask
 Flask-Session
+gunicorn
 passlib
 psycopg2
 requests
