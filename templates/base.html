@@ -26,8 +26,9 @@
                     <li><a href={{ url_for('index') }}>Home</a></li>
                 </ul>
                 <form class="navbar-form navbar-left" action="{{ url_for('search') }}">
-                    <input type="text" class="form-control" name="q" placeholder="SEARCH" maxlength="20" required>
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="q" placeholder="SEARCH" maxlength="20" required>
+                    </div>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     {% if session.logged_in %}

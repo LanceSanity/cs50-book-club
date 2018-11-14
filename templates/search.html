@@ -2,16 +2,11 @@
 
 {% block app_content %}
     <h1 class="mt-5 text-center">Search Results</h1>
-    <div class="container">
+    <div class="list-group">
         {% for entry in results %}
-        <div class="row">
-            <div class="col-md-5 text-center">
-                <h3>
-                    <a href="{{ url_for('books', isbn=entry.isbn) }}">{{ entry.title }}</a>
-                </h3>
-        </div>
+        <a href="{{ url_for('books', isbn=entry.isbn) }}" class="list-group-item list-group-item-action">{{ entry.title }} by {{ entry.author }}<br>ISBN: {{ entry.isbn }}</a>
         {% else %}
-            <p>No matches found</p>
+            <p class="lead">No matches found!</p>
         {% endfor %}
-        </ul>
+    </div>
 {% endblock %}
