@@ -2,7 +2,11 @@
 
 CS50 project 1: a website with a database of books. Users can rate and write a review.
 
-Hosted on: [Heroku](https://cs50-book-club.herokuapp.com/)
+Check out the website: [link](https://cs50-book-club.herokuapp.com/)
+
+You can also use the API route to fetch data given an ISBN: ```cs50-book-club.herokuapp.com/api/<isbn>```
+
+Example: go to [https://cs50-book-club.herokuapp.com/api/0060929871](https://cs50-book-club.herokuapp.com/api/0060929871) for information on "A Brave New World."
 
 ### Languages/Tools/Frameworks
 
